@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -cp target/classes:target/dependency/* org.example.Main
+web: java $JAVA_OPTS -cp java-project/team11/bin/App
