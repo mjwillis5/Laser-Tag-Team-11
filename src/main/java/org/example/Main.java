@@ -78,23 +78,53 @@ public class Main extends JFrame{
    //Set Team 1 participants
    JTextField t1Part1 = new JTextField();
    t1Part1.setBounds(200, 200, 200, 30);
+   JLabel t1FirstName = new JLabel("First Name");
+   t1FirstName.setBounds(t1Part1.getX() - 100, t1Part1.getY(), 200, 25);
+   t1FirstName.setFont(new Font("default", Font.BOLD, 16));
+   t1FirstName.setForeground(Color.white);
 
    JTextField t1Part2 = new JTextField();
    t1Part2.setBounds(200, 250, 200, 30);
+   JLabel t1LastName = new JLabel("Last Name");
+   t1LastName.setBounds(t1Part2.getX() - 100, t1Part2.getY(), 200, 25);
+   t1LastName.setFont(new Font("default", Font.BOLD, 16));
+   t1LastName.setForeground(Color.white);
 
    JTextField t1Part3 = new JTextField();
    t1Part3.setBounds(200, 300, 200, 30);
+   JLabel t1Codename = new JLabel("Codename");
+   t1Codename.setBounds(t1Part3.getX() - 100, t1Part3.getY(), 200, 25);
+   t1Codename.setFont(new Font("default", Font.BOLD, 16));
+   t1Codename.setForeground(Color.white);
 
 
    //Set Team 2 participants
    JTextField t2Part1 = new JTextField();
    t2Part1.setBounds(1075, 200, 200, 30);
+   JLabel t2FirstName = new JLabel("First Name");
+   t2FirstName.setBounds(t2Part1.getX() - 100, t2Part1.getY(), 200, 25);
+   t2FirstName.setFont(new Font("default", Font.BOLD, 16));
+   t2FirstName.setForeground(Color.white);
 
    JTextField t2Part2 = new JTextField();
    t2Part2.setBounds(1075, 250, 200, 30);
+   JLabel t2LastName = new JLabel("Last Name");
+   t2LastName.setBounds(t2Part2.getX() - 100, t2Part2.getY(), 200, 25);
+   t2LastName.setFont(new Font("default", Font.BOLD, 16));
+   t2LastName.setForeground(Color.white);
 
    JTextField t2Part3 = new JTextField();
    t2Part3.setBounds(1075, 300, 200, 30);
+   JLabel t2Codename = new JLabel("Codename");
+   t2Codename.setBounds(t2Part3.getX() - 100, t2Part3.getY(), 200, 25);
+   t2Codename.setFont(new Font("default", Font.BOLD, 16));
+   t2Codename.setForeground(Color.white);
+
+   JButton addButton1 = new JButton("Add Player");
+   addButton1.setBounds(t1Part3.getX() + 50, t1Part3.getY() + 50, 100, 30);
+
+   JButton addButton2 = new JButton("Add Player");
+   addButton2.setBounds(t2Part3.getX() + 50, t2Part3.getY() + 50, 100, 30);
 
 
 
@@ -117,6 +147,14 @@ public class Main extends JFrame{
    f.add(t2Part2);
    f.add(t2Part3);
    f.add(startGame);
+   f.add(t1FirstName);
+   f.add(t1LastName);
+   f.add(t1Codename);
+   f.add(t2FirstName);
+   f.add(t2LastName);
+   f.add(t2Codename);
+   f.add(addButton1);
+   f.add(addButton2);
    f.setLayout(null);
    f.setVisible(true);
    f.setResizable(true);
