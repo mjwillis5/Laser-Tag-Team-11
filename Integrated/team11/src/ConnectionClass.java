@@ -14,7 +14,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 public class ConnectionClass {
+   static int count1;
+   static int count2;
    public static void main(String args[]) {
       JFrame f = new JFrame("Laser Tag");
       Connection c = null;
@@ -42,6 +45,7 @@ public class ConnectionClass {
          System.out.printf( "id = %s , first_name = %s, last_name = %s, codename = %s ", id,first_name, last_name, codename );
 
          System.out.println();
+         count1 = id;
          }
          ResultSet rt = stmt.executeQuery( "select * from team2" );
          System.out.printf("Team2\n");
@@ -58,6 +62,7 @@ public class ConnectionClass {
          System.out.printf( "id = %s , first_name = %s, last_name = %s, codename = %s ", id,first_name, last_name, codename );
 
          System.out.println();
+         count2 = id;
          }
 
       } catch (Exception e) {
@@ -171,10 +176,68 @@ public class ConnectionClass {
 
    JButton addButton1 = new JButton("Add Player");
    addButton1.setBounds(t1Part3.getX() + 50, t1Part3.getY() + 50, 100, 30);
-
+   addButton1.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         try{
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+               System.out.println("success");
+            stmt = c.createStatement();
+            String query= "INSERT INTO team1 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt= c.prepareStatement(query);
+            myStmt.setInt(1, count1+1);
+            myStmt.setString(2, t1Part1.getText());
+            myStmt.setString(3, t1Part2.getText());
+            myStmt.setString(4, t1Part3.getText());
+            count1++;
+        // Execute SQL query
+            myStmt.executeUpdate();
+            System.out.println("add");
+         } catch (Exception x) {
+            x.printStackTrace();
+            System.err.println(x.getClass().getName()+": "+x.getMessage());
+            System.exit(0);
+         }
+         
+      }
+   });
    JButton addButton2 = new JButton("Add Player");
    addButton2.setBounds(t2Part3.getX() + 50, t2Part3.getY() + 50, 100, 30);
-
+   addButton2.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         try{
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+               System.out.println("success");
+            stmt = c.createStatement();
+            String query= "INSERT INTO team2 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt= c.prepareStatement(query);
+            myStmt.setInt(1, count2+1);
+            myStmt.setString(2, t2Part1.getText());
+            myStmt.setString(3, t2Part2.getText());
+            myStmt.setString(4, t2Part3.getText());
+            count2++;
+        // Execute SQL query
+            myStmt.executeUpdate();
+            System.out.println("add");
+         } catch (Exception x) {
+            x.printStackTrace();
+            System.err.println(x.getClass().getName()+": "+x.getMessage());
+            System.exit(0);
+         }
+         
+      }
+   });
 
 
 
@@ -211,4 +274,6 @@ public class ConnectionClass {
 
   }
    }
+   
+
    
