@@ -8,8 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.Font;
-import javax.swing.*;
 import javax.swing.border.Border;
+
 
 
 public class Main extends JFrame{
@@ -126,17 +126,23 @@ public class Main extends JFrame{
    JButton addButton2 = new JButton("Add Player");
    addButton2.setBounds(t2Part3.getX() + 50, t2Part3.getY() + 50, 100, 30);
 
-
-
-
    //Set button to start game
    JButton startGame = new JButton("Start Game");
-   //startGame.setBounds(JFrame.MAXIMIZED_BOTH/2, JFrame.MAXIMIZED_BOTH/2, 100, 30);
    startGame.setBounds(700, 650, 100, 30);
+   //Add Action Listener to start play action 
+   startGame.addActionListener(new ActionListener()
+   {
+       public void actionPerformed(ActionEvent ae)
+       {
+    	   f.dispose();
+    	   PlayAction paFrame = new PlayAction();
+       }
+   });
 
 
 
    //add elements to the frame
+   f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
    f.add(title);
    f.add(team1);
    f.add(team2);
@@ -159,8 +165,11 @@ public class Main extends JFrame{
    f.setVisible(true);
    f.setResizable(true);
    f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+   
+   
 
+  
   }
   
-  
 }
+
