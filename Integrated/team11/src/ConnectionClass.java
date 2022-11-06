@@ -15,6 +15,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+
 public class ConnectionClass {
    static int count1;
    static int count2;
@@ -245,7 +246,14 @@ public class ConnectionClass {
    JButton startGame = new JButton("Start Game");
    //startGame.setBounds(JFrame.MAXIMIZED_BOTH/2, JFrame.MAXIMIZED_BOTH/2, 100, 30);
    startGame.setBounds(700, 650, 100, 30);
-
+   startGame.addActionListener(new ActionListener()
+   {
+       public void actionPerformed(ActionEvent ae)
+       {
+    	   f.dispose();
+    	   PlayAction paFrame = new PlayAction();
+       }
+   });
 
 
    //add elements to the frame
@@ -274,6 +282,10 @@ public class ConnectionClass {
 
   }
    }
+   
+
+   
+
    
 
    
