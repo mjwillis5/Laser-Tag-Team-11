@@ -41,12 +41,30 @@ PlayAction (){
 	   team1.setBounds(250, 150, 200, 30);
 	   team1.setFont(new Font("default", Font.BOLD, 24));
 	   team1.setForeground(Color.white);
+	   
 	
 	   //Set Label properties for team 2
 	   JLabel team2 = new JLabel("Team 2");
 	   team2.setBounds(1130, 150, 200, 30);
 	   team2.setFont(new Font("default", Font.BOLD, 24));
 	   team2.setForeground(Color.white);
+	   
+	   //Display code name and Score for player 1 in team 1
+	   JLabel t1Codename = new JLabel("Codename");
+	   t1Codename.setBounds(200, 200, 200, 30);
+	   t1Codename.setFont(new Font("default", Font.BOLD, 16));
+	   t1Codename.setForeground(Color.white);
+	   JTextField t1P1Score = new JTextField();
+	   t1P1Score.setBounds(t1Codename.getX()+150, t1Codename.getY(), 50, 30);
+	   
+	 //Display code name and Score for player 1 in team 2
+	   JLabel t2Codename = new JLabel("Codename");
+	   t2Codename.setBounds(1075, 200, 200, 30);
+	   t2Codename.setFont(new Font("default", Font.BOLD, 16));
+	   t2Codename.setForeground(Color.white);
+	   JTextField t2P1Score = new JTextField();
+	   t2P1Score.setBounds(t2Codename.getX()+150, t2Codename.getY(), 50, 30);
+	   
 	   
 	   //Set Text Window to display data 
 	   JTextField tWin = new JTextField();
@@ -57,6 +75,10 @@ PlayAction (){
 	   f.add(paTitle);
 	   f.add(team1);
 	   f.add(team2);
+	   f.add(t1Codename);
+	   f.add(t1P1Score);
+	   f.add(t2Codename);
+	   f.add(t2P1Score);
 	   f.add(tWin);
 	   f.setLayout(null);
 	   f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,3 +90,4 @@ PlayAction (){
   }
 		  
 }
+
