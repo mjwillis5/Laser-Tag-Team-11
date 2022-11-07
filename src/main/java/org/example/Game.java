@@ -1,4 +1,4 @@
-package org.example;
+package org.example;//package org.example;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,22 +6,72 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 import java.awt.Font;
-import javax.swing.border.Border;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.sql.PreparedStatement;
 
+public class Game {
+   static int count1;
+   static int count2;
+   static JLabel countdownTimer = new JLabel();
+   public static void main(String args[]) {
+      JFrame f = new JFrame("Laser Tag");
+      Connection c = null;
+      Statement stmt = null;
+      try {
+         Class.forName("org.postgresql.Driver");
+         c = DriverManager
+            .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+            "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+            System.out.println("success");
+         stmt = c.createStatement();
 
+         ResultSet rs = stmt.executeQuery( "select * from team1" );
+         System.out.printf("Team1\n");
+         while ( rs.next() ) {
 
-public class Game extends JFrame{
-	//Create frame
-	 private JFrame f = new JFrame("Laser Tag");
+         int id = rs.getInt("id");
 
-	
+         String  first_name = rs.getString("first_name");
 
-	  
-	  public Game() {
-   
-   //Set size, location, look and feel of frame
+         String  last_name = rs.getString("last_name");
+
+         String  codename = rs.getString("codename"); 
+
+         System.out.printf( "id = %s , first_name = %s, last_name = %s, codename = %s ", id,first_name, last_name, codename );
+
+         System.out.println();
+         count1 = id;
+         }
+         ResultSet rt = stmt.executeQuery( "select * from team2" );
+         System.out.printf("Team2\n");
+         while ( rt.next() ) {
+
+         int id = rt.getInt("id");
+
+         String  first_name = rt.getString("first_name");
+
+         String  last_name = rt.getString("last_name");
+
+         String  codename = rt.getString("codename"); 
+
+         System.out.printf( "id = %s , first_name = %s, last_name = %s, codename = %s ", id,first_name, last_name, codename );
+
+         System.out.println();
+         count2 = id;
+         }
+
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.err.println(e.getClass().getName()+": "+e.getMessage());
+         System.exit(0);
+
+      }
+      System.out.println("Opened database successfully");
+      //Set size, location, look and feel of frame
    f.setExtendedState(JFrame.MAXIMIZED_BOTH);
    f.setLocation(0, 0);
    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -125,27 +175,119 @@ public class Game extends JFrame{
 
    JButton addButton1 = new JButton("Add Player");
    addButton1.setBounds(t1Part3.getX() + 50, t1Part3.getY() + 50, 100, 30);
-
+   addButton1.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         try{
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+               System.out.println("success");
+            stmt = c.createStatement();
+            String query= "INSERT INTO team1 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt= c.prepareStatement(query);
+            myStmt.setInt(1, count1+1);
+            myStmt.setString(2, t1Part1.getText());
+            myStmt.setString(3, t1Part2.getText());
+            myStmt.setString(4, t1Part3.getText());
+            count1++;
+        // Execute SQL query
+            myStmt.executeUpdate();
+            System.out.println("add");
+         } catch (Exception x) {
+            x.printStackTrace();
+            System.err.println(x.getClass().getName()+": "+x.getMessage());
+            System.exit(0);
+         }
+         
+      }
+   });
    JButton addButton2 = new JButton("Add Player");
    addButton2.setBounds(t2Part3.getX() + 50, t2Part3.getY() + 50, 100, 30);
+   addButton2.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e) {
+         try{
+            Connection c = null;
+            Statement stmt = null;
+            Class.forName("org.postgresql.Driver");
+            c = DriverManager
+               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+               System.out.println("success");
+            stmt = c.createStatement();
+            String query= "INSERT INTO team2 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt= c.prepareStatement(query);
+            myStmt.setInt(1, count2+1);
+            myStmt.setString(2, t2Part1.getText());
+            myStmt.setString(3, t2Part2.getText());
+            myStmt.setString(4, t2Part3.getText());
+            count2++;
+        // Execute SQL query
+            myStmt.executeUpdate();
+            System.out.println("add");
+         } catch (Exception x) {
+            x.printStackTrace();
+            System.err.println(x.getClass().getName()+": "+x.getMessage());
+            System.exit(0);
+         }
+         
+      }
+   });
+
+   //Set up countdown timer
+   countdownTimer.setText("");
+   countdownTimer.setBounds(550, 0, 1000, 1000);
+   countdownTimer.setFont(new Font("default", Font.BOLD, 800));
+   countdownTimer.setForeground(Color.white);
+   countdownTimer.setVisible(false);
 
    //Set button to start game
    JButton startGame = new JButton("Start Game");
+   //startGame.setBounds(JFrame.MAXIMIZED_BOTH/2, JFrame.MAXIMIZED_BOTH/2, 100, 30);
    startGame.setBounds(700, 650, 100, 30);
-   //Add Action Listener to start play action 
    startGame.addActionListener(new ActionListener()
    {
        public void actionPerformed(ActionEvent ae)
        {
+          //Countdown timer
+          startGame.setVisible(false);
+          countdownTimer.setVisible(true);
+          countdownTimer.setText("3");
+          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+          f.repaint();
+          try {
+             Thread.sleep(1000);
+          } catch (InterruptedException e) {
+             throw new RuntimeException(e);
+          }
+          countdownTimer.setText("2");
+          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+          f.repaint();
+          try {
+             Thread.sleep(1000);
+          } catch (InterruptedException e) {
+             throw new RuntimeException(e);
+          }
+          countdownTimer.setText("1");
+          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+          f.repaint();
+          try {
+             Thread.sleep(1000);
+          } catch (InterruptedException e) {
+             throw new RuntimeException(e);
+          }
+
     	   f.dispose();
-    	   new PlayAction();
+    	   PlayAction paFrame = new PlayAction();
        }
    });
 
 
-
    //add elements to the frame
-   f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
    f.add(title);
    f.add(team1);
    f.add(team2);
@@ -164,29 +306,18 @@ public class Game extends JFrame{
    f.add(t2Codename);
    f.add(addButton1);
    f.add(addButton2);
+   f.add(countdownTimer);
    f.setLayout(null);
    f.setVisible(true);
    f.setResizable(true);
    f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-  
-  }
-	  public static void main(String[] args) {
-		  EventQueue.invokeLater(new Runnable()
-		    {
-		        public void run()
-		        {
-		            try
-		            {
-		                Game game = new Game();
-		                game.f.setVisible(true);
-		            }
-		            catch (Exception e)
-		            {
-		                e.printStackTrace();
-		            }
-		        }
-		    });
-	  }
-  
-}
 
+  }
+   }
+   
+
+   
+
+   
+
+   
