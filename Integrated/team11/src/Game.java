@@ -14,6 +14,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 
 public class Game {
+   static int count4 = 1;
+   static int count3=1;
    static int count1;
    static int count2;
    static JLabel countdownTimer = new JLabel();
@@ -68,7 +70,6 @@ public class Game {
          e.printStackTrace();
          System.err.println(e.getClass().getName()+": "+e.getMessage());
          System.exit(0);
-
       }
       System.out.println("Opened database successfully");
       //Set size, location, look and feel of frame
@@ -187,7 +188,9 @@ public class Game {
                "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
                System.out.println("success");
             stmt = c.createStatement();
+            String query1= "DELETE FROM team1";
             String query= "INSERT INTO team1 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt1= c.prepareStatement(query1);
             PreparedStatement myStmt= c.prepareStatement(query);
             myStmt.setInt(1, count1+1);
             myStmt.setString(2, t1Part1.getText());
@@ -195,6 +198,10 @@ public class Game {
             myStmt.setString(4, t1Part3.getText());
             count1++;
         // Execute SQL query
+            count4--;
+            if(count4>=0){
+             myStmt1.executeUpdate();
+            }
             myStmt.executeUpdate();
             System.out.println("add");
          } catch (Exception x) {
@@ -219,7 +226,9 @@ public class Game {
                "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
                System.out.println("success");
             stmt = c.createStatement();
+            String query1= "DELETE FROM team2";
             String query= "INSERT INTO team2 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt1= c.prepareStatement(query1);
             PreparedStatement myStmt= c.prepareStatement(query);
             myStmt.setInt(1, count2+1);
             myStmt.setString(2, t2Part1.getText());
@@ -227,6 +236,10 @@ public class Game {
             myStmt.setString(4, t2Part3.getText());
             count2++;
         // Execute SQL query
+            count3--;
+            if(count3>=0){
+             myStmt1.executeUpdate();
+            }
             myStmt.executeUpdate();
             System.out.println("add");
          } catch (Exception x) {
