@@ -204,6 +204,9 @@ public class Game {
             }
             myStmt.executeUpdate();
             System.out.println("add");
+            t1Part1.setText("");
+            t1Part2.setText("");
+            t1Part3.setText("");
          } catch (Exception x) {
             x.printStackTrace();
             System.err.println(x.getClass().getName()+": "+x.getMessage());
@@ -242,6 +245,9 @@ public class Game {
             }
             myStmt.executeUpdate();
             System.out.println("add");
+            t2Part1.setText("");
+            t2Part2.setText("");
+            t2Part3.setText(""); 
          } catch (Exception x) {
             x.printStackTrace();
             System.err.println(x.getClass().getName()+": "+x.getMessage());
