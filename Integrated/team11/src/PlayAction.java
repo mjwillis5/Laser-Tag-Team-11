@@ -16,6 +16,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import java.util.concurrent.*;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class PlayAction{
 	
@@ -27,6 +29,29 @@ PlayAction (){
 
 	   //[PLAY ACTION SCREEN]
 	   //Set background image of frame
+		 final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		 JTextArea timer = new JTextArea();
+		 timer.setBounds(735, 300, 30, 20);
+		 timer.setForeground(Color.white);
+		 timer.setForeground(Color.black);
+        final Runnable runnable = new Runnable() {
+            int countdownStarter = 360;
+
+            public void run() {
+
+                System.out.println(countdownStarter);
+                countdownStarter--;
+								String s=String.valueOf(countdownStarter);
+                timer.setText(s);
+                if (countdownStarter < 0) {
+                    System.out.println("Timer Over!");
+                    scheduler.shutdown();
+                }
+            }
+        };
+        scheduler.scheduleAtFixedRate(runnable, 0, 1, SECONDS);
+				
+				
 		 Connection c = null;
 		 Statement stmt = null;
 		 try {
@@ -139,6 +164,7 @@ PlayAction (){
 	   f.add(t2P1Score);
 	   f.add(tWin1);
 		 f.add(tWin2);
+		 f.add(timer);
 	   f.setLayout(null);
 	   f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	   f.setVisible(true);
