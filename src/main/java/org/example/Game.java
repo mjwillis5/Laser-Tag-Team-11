@@ -237,6 +237,115 @@ public class Game {
          
       }
    });
+   
+   //User looks up codename to play the game
+   JLabel codeName = new JLabel("Already registered. Enter Your code name and press \"OK\"");
+   codeName.setBounds(500, 400, 450, 30);
+   codeName.setFont(new Font("default", Font.BOLD, 16));
+   codeName.setForeground(Color.white);
+   
+   //Declaring Radio Button for each Team
+   JRadioButton team1RButton = new JRadioButton("Team 1");
+   JRadioButton team2RButton = new JRadioButton("Team 2");
+   team1RButton.setBounds(600, 450, 75, 30);
+   team2RButton.setBounds(820, 450, 75, 30);
+   ButtonGroup tName = new ButtonGroup();
+   tName.add(team1RButton);
+   tName.add(team2RButton);
+   
+   
+   //Capture Code Name
+   JTextField cName = new JTextField();
+   cName.setBounds(600, 500, 200, 30);
+   cName.setText(null);
+   
+   //Display and OK Button
+   JButton okButton = new JButton("OK");
+   okButton.setBounds(820, 500, 75, 30);
+   //Label to Display Message
+   JLabel eMessage = new JLabel("");
+   eMessage.setBounds(550, 550, 450, 30);
+   eMessage.setFont(new Font("default", Font.BOLD, 16));
+   eMessage.setForeground(Color.white);
+   okButton.addActionListener(new ActionListener(){
+   @Override
+   public void actionPerformed(ActionEvent e) {
+	   eMessage.setText("");
+	   if(team1RButton.isSelected() == team2RButton.isSelected()) {
+		   eMessage.setText("No team selected. Please select a Team");
+		   System.out.println("No team selected.");
+	   }
+	   else
+	   if(cName.getText().isEmpty()) {
+		   eMessage.setText("No codeName entered. Please enter a codeName");
+		   System.out.println("CodeName is Empty");
+		   
+	   }
+	   //Capture DBName based on radio button selected.  
+	   String dbName = "";
+	   if(team1RButton.isSelected()) {
+		   dbName = "team1"; 
+	   }
+	   else if(team2RButton.isSelected()) {
+		   dbName = "team2";
+	   }
+
+	   System.out.println("Database = " + dbName);
+	   String codeName = cName.getText();
+	   System.out.println("codeName = " + codeName);
+	   
+  
+     try{
+         Connection c = null;
+         Statement stmt = null;
+         Class.forName("org.postgresql.Driver");
+         c = DriverManager
+            .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+            "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+            System.out.println("success");
+         stmt = c.createStatement();
+         String query= "Select * from " + dbName + " where codename = ?";
+         PreparedStatement myStmt= c.prepareStatement(query);
+         myStmt.setString(1, codeName);
+         System.out.println("Query =  = " + myStmt);
+  
+     // Execute SQL query
+         ResultSet rs = myStmt.executeQuery();
+         int index =0;
+         while ( rs.next() ) {
+            index++;
+          } 
+         System.out.println( "Index = " + index);
+         switch (index) {
+         case 0:
+        	 eMessage.setText("Code name does not exist. Try again.");
+        	 break;
+         case 1:
+        	 eMessage.setText("Code name exists. Press \"Start Game\" to start the game.");
+        	 break;
+         default:
+        	 eMessage.setText("More than one Code name exists. Error. Create a unique id.");
+        	 break;
+         }
+         /*if (index ==1){
+        	 eMessage.setText("Code name exists. Press \"Start Game\" to start the game.");
+         }
+         else 
+        	 eMessage.setText("More than one Code name exists.");*/
+          rs.close();
+          myStmt.close();
+         
+         
+         
+      } catch (Exception x) {
+         x.printStackTrace();
+         System.err.println(x.getClass().getName()+": "+x.getMessage());
+         System.exit(0);
+      }
+      
+   }
+});
+   
 
    //Set up countdown timer
    countdownTimer.setText("");
@@ -306,6 +415,12 @@ public class Game {
    f.add(t2Codename);
    f.add(addButton1);
    f.add(addButton2);
+   f.add(cName);
+   f.add(codeName);
+   f.add(okButton);
+   f.add(eMessage);
+   f.add(team1RButton);
+   f.add(team2RButton);
    f.add(countdownTimer);
    f.setLayout(null);
    f.setVisible(true);
@@ -315,6 +430,13 @@ public class Game {
   }
    }
    
+
+   
+
+   
+
+   
+
 
    
 
