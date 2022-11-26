@@ -348,11 +348,15 @@ public class Game {
 	   	   else if(team2AButton.isSelected()) {
 	   		   tbName = "team2";
 	   	   }
+  	   	   int count=0;
+	   	   if (tbName == "team1") count = count1;
+	   	   else if (tbName == "team2") count = count2;
 		   String newCodeName = cName.getText();
 		   System.out.println("codeName = " + codeName);
 	    	  
 	    
 	         try{
+
 	            Connection c = null;
 	            Statement stmt = null;
 	            Class.forName("org.postgresql.Driver");
@@ -363,11 +367,15 @@ public class Game {
 	            stmt = c.createStatement();
 	            String query= "INSERT INTO " + tbName + " VALUES(?,?,?,?)";
 	            PreparedStatement myStmt= c.prepareStatement(query);
-	            myStmt.setInt(1, count1+1);
+	            myStmt.setInt(1, count+1);
 	            myStmt.setString(2, null);
 	            myStmt.setString(3, null);
 	            myStmt.setString(4, newCodeName);
-	            count1++;
+		   	   if (tbName == "team1") count1++;
+		   	   else if (tbName == "team2") count2++;
+	            /*String query= "Delete from " + tbName;
+	            PreparedStatement myStmt= c.prepareStatement(query);*/
+	            
 	        // Execute SQL query
 	            myStmt.executeUpdate();
 	            System.out.println("add");
