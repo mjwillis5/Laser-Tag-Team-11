@@ -14,6 +14,8 @@ import java.sql.Statement;
 import java.sql.PreparedStatement;
 
 public class Game {
+   static int count4 = 1;
+   static int count3=1;
    static int count1;
    static int count2;
    static JLabel countdownTimer = new JLabel();
@@ -68,7 +70,6 @@ public class Game {
          e.printStackTrace();
          System.err.println(e.getClass().getName()+": "+e.getMessage());
          System.exit(0);
-
       }
       System.out.println("Opened database successfully");
       //Set size, location, look and feel of frame
@@ -187,7 +188,9 @@ public class Game {
                "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
                System.out.println("success");
             stmt = c.createStatement();
+            String query1= "DELETE FROM team1";
             String query= "INSERT INTO team1 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt1= c.prepareStatement(query1);
             PreparedStatement myStmt= c.prepareStatement(query);
             myStmt.setInt(1, count1+1);
             myStmt.setString(2, t1Part1.getText());
@@ -195,8 +198,15 @@ public class Game {
             myStmt.setString(4, t1Part3.getText());
             count1++;
         // Execute SQL query
+            count4--;
+            if(count4>=0){
+             myStmt1.executeUpdate();
+            }
             myStmt.executeUpdate();
             System.out.println("add");
+            t1Part1.setText("");
+            t1Part2.setText("");
+            t1Part3.setText("");
          } catch (Exception x) {
             x.printStackTrace();
             System.err.println(x.getClass().getName()+": "+x.getMessage());
@@ -219,7 +229,9 @@ public class Game {
                "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
                System.out.println("success");
             stmt = c.createStatement();
+            String query1= "DELETE FROM team2";
             String query= "INSERT INTO team2 " + "VALUES(?,?,?,?)";
+            PreparedStatement myStmt1= c.prepareStatement(query1);
             PreparedStatement myStmt= c.prepareStatement(query);
             myStmt.setInt(1, count2+1);
             myStmt.setString(2, t2Part1.getText());
@@ -227,8 +239,15 @@ public class Game {
             myStmt.setString(4, t2Part3.getText());
             count2++;
         // Execute SQL query
+            count3--;
+            if(count3>=0){
+             myStmt1.executeUpdate();
+            }
             myStmt.executeUpdate();
             System.out.println("add");
+            t2Part1.setText("");
+            t2Part2.setText("");
+            t2Part3.setText(""); 
          } catch (Exception x) {
             x.printStackTrace();
             System.err.println(x.getClass().getName()+": "+x.getMessage());
@@ -237,115 +256,6 @@ public class Game {
          
       }
    });
-   
-   //User looks up codename to play the game
-   JLabel codeName = new JLabel("Already registered. Enter Your code name and press \"OK\"");
-   codeName.setBounds(500, 400, 450, 30);
-   codeName.setFont(new Font("default", Font.BOLD, 16));
-   codeName.setForeground(Color.white);
-   
-   //Declaring Radio Button for each Team
-   JRadioButton team1RButton = new JRadioButton("Team 1");
-   JRadioButton team2RButton = new JRadioButton("Team 2");
-   team1RButton.setBounds(600, 450, 75, 30);
-   team2RButton.setBounds(820, 450, 75, 30);
-   ButtonGroup tName = new ButtonGroup();
-   tName.add(team1RButton);
-   tName.add(team2RButton);
-   
-   
-   //Capture Code Name
-   JTextField cName = new JTextField();
-   cName.setBounds(600, 500, 200, 30);
-   cName.setText(null);
-   
-   //Display and OK Button
-   JButton okButton = new JButton("OK");
-   okButton.setBounds(820, 500, 75, 30);
-   //Label to Display Message
-   JLabel eMessage = new JLabel("");
-   eMessage.setBounds(550, 550, 450, 30);
-   eMessage.setFont(new Font("default", Font.BOLD, 16));
-   eMessage.setForeground(Color.white);
-   okButton.addActionListener(new ActionListener(){
-   @Override
-   public void actionPerformed(ActionEvent e) {
-	   eMessage.setText("");
-	   if(team1RButton.isSelected() == team2RButton.isSelected()) {
-		   eMessage.setText("No team selected. Please select a Team");
-		   System.out.println("No team selected.");
-	   }
-	   else
-	   if(cName.getText().isEmpty()) {
-		   eMessage.setText("No codeName entered. Please enter a codeName");
-		   System.out.println("CodeName is Empty");
-		   
-	   }
-	   //Capture DBName based on radio button selected.  
-	   String dbName = "";
-	   if(team1RButton.isSelected()) {
-		   dbName = "team1"; 
-	   }
-	   else if(team2RButton.isSelected()) {
-		   dbName = "team2";
-	   }
-
-	   System.out.println("Database = " + dbName);
-	   String codeName = cName.getText();
-	   System.out.println("codeName = " + codeName);
-	   
-  
-     try{
-         Connection c = null;
-         Statement stmt = null;
-         Class.forName("org.postgresql.Driver");
-         c = DriverManager
-            .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
-            "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
-            System.out.println("success");
-         stmt = c.createStatement();
-         String query= "Select * from " + dbName + " where codename = ?";
-         PreparedStatement myStmt= c.prepareStatement(query);
-         myStmt.setString(1, codeName);
-         System.out.println("Query =  = " + myStmt);
-  
-     // Execute SQL query
-         ResultSet rs = myStmt.executeQuery();
-         int index =0;
-         while ( rs.next() ) {
-            index++;
-          } 
-         System.out.println( "Index = " + index);
-         switch (index) {
-         case 0:
-        	 eMessage.setText("Code name does not exist. Try again.");
-        	 break;
-         case 1:
-        	 eMessage.setText("Code name exists. Press \"Start Game\" to start the game.");
-        	 break;
-         default:
-        	 eMessage.setText("More than one Code name exists. Error. Create a unique id.");
-        	 break;
-         }
-         /*if (index ==1){
-        	 eMessage.setText("Code name exists. Press \"Start Game\" to start the game.");
-         }
-         else 
-        	 eMessage.setText("More than one Code name exists.");*/
-          rs.close();
-          myStmt.close();
-         
-         
-         
-      } catch (Exception x) {
-         x.printStackTrace();
-         System.err.println(x.getClass().getName()+": "+x.getMessage());
-         System.exit(0);
-      }
-      
-   }
-});
-   
 
    //Set up countdown timer
    countdownTimer.setText("");
@@ -415,12 +325,6 @@ public class Game {
    f.add(t2Codename);
    f.add(addButton1);
    f.add(addButton2);
-   f.add(cName);
-   f.add(codeName);
-   f.add(okButton);
-   f.add(eMessage);
-   f.add(team1RButton);
-   f.add(team2RButton);
    f.add(countdownTimer);
    f.setLayout(null);
    f.setVisible(true);
