@@ -22,8 +22,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class PlayAction{
 	
 	//Create frame
+	  JScrollPane scroll1;
+		JScrollPane scroll2;
   	JFrame f = new JFrame("Play Action");
-  	
+  	int x = 0;
 PlayAction (){
 
 
@@ -35,18 +37,26 @@ PlayAction (){
 		 timer.setForeground(Color.white);
 		 timer.setForeground(Color.black);
         final Runnable runnable = new Runnable() {
+				    int preparation = 30;
             int countdownStarter = 360;
 
             public void run() {
-
-                System.out.println(countdownStarter);
-                countdownStarter--;
-								String s=String.valueOf(countdownStarter);
-                timer.setText(s);
-                if (countdownStarter < 0) {
-                    System.out.println("Timer Over!");
-                    scheduler.shutdown();
-                }
+							 if(preparation>=0){
+                System.out.println(preparation);
+								preparation--;
+								String ss= String.valueOf(preparation);
+								timer.setText(ss);
+							 }
+                if(preparation<0){
+									System.out.println(countdownStarter);
+									countdownStarter--;
+									String s=String.valueOf(countdownStarter);
+									timer.setText(s);
+									if (countdownStarter <= 0) {
+											System.out.println("Timer Over!");
+											scheduler.shutdown();
+									}
+								}
             }
         };
         scheduler.scheduleAtFixedRate(runnable, 0, 1, SECONDS);
@@ -85,39 +95,111 @@ PlayAction (){
 	
 	   //Set Label properties for team 1
 	   JLabel team1 = new JLabel("Team 1");
-	   team1.setBounds(250, 150, 200, 30);
+	   team1.setBounds(250, 20, 200, 30);
 	   team1.setFont(new Font("default", Font.BOLD, 24));
 	   team1.setForeground(Color.white);
 		 
 	   //Set Label properties for team 2
 	   JLabel team2 = new JLabel("Team 2");
-	   team2.setBounds(1130, 150, 200, 30);
+	   team2.setBounds(1130, 20, 200, 30);
 	   team2.setFont(new Font("default", Font.BOLD, 24));
 	   team2.setForeground(Color.white);
 	   
 	   //Display code name and Score for player 1 in team 1
-	   JLabel t1Codename = new JLabel("Codename");
+		 try{
+	    ResultSet rs = stmt.executeQuery( "select * from team1" );
+			//System.out.printf("Team1\n");
+			while ( rs.next() ) {
+
+				//int id = rs.getInt("id");
+
+				String  code_name = rs.getString("codename");
+				JLabel t1Codename = new JLabel(code_name);
+				t1Codename.setBounds(200, 60+x, 200, 30);
+				t1Codename.setFont(new Font("default", Font.BOLD, 16));
+				t1Codename.setForeground(Color.white);
+				f.add(t1Codename);
+				JLabel t1P1Score = new JLabel("0");
+				t1P1Score.setBounds(t1Codename.getX()+150, 60+x, 50, 30);
+				t1P1Score.setFont(new Font("default", Font.BOLD, 16));
+		    t1P1Score.setForeground(Color.white);
+				f.add(t1P1Score);
+				x+=35;
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+	  JLabel TotalForTeam1 = new JLabel("Total Point");	
+    TotalForTeam1.setBounds(250, 60+x, 200, 30);
+    TotalForTeam1.setFont(new Font("default", Font.BOLD, 16));
+		TotalForTeam1.setForeground(Color.white);
+		f.add(TotalForTeam1);
+		JLabel TotalScore = new JLabel("0");
+		TotalScore.setBounds(350, 60+x, 100, 30);
+		TotalScore.setFont(new Font("default", Font.BOLD, 16));
+		TotalScore.setForeground(Color.white);
+		f.add(TotalScore);
+		x=0;
+	   /*JLabel t1Codename = new JLabel("Codename");
 	   t1Codename.setBounds(200, 200, 200, 30);
 	   t1Codename.setFont(new Font("default", Font.BOLD, 16));
 	   t1Codename.setForeground(Color.white);
 	   JTextField t1P1Score = new JTextField();
-	   t1P1Score.setBounds(t1Codename.getX()+150, t1Codename.getY(), 50, 30);
+	   t1P1Score.setBounds(t1Codename.getX()+150, t1Codename.getY(), 50, 30);*/
 	   
 	 //Display code name and Score for player 1 in team 2
-	   JLabel t2Codename = new JLabel("Codename");
+	   /*JLabel t2Codename = new JLabel("Codename");
 	   t2Codename.setBounds(1075, 200, 200, 30);
 	   t2Codename.setFont(new Font("default", Font.BOLD, 16));
 	   t2Codename.setForeground(Color.white);
 	   JTextField t2P1Score = new JTextField();
-	   t2P1Score.setBounds(t2Codename.getX()+150, t2Codename.getY(), 50, 30);
+	   t2P1Score.setBounds(t2Codename.getX()+150, t2Codename.getY(), 50, 30);*/
 	   
+		 try{
+	    ResultSet rs = stmt.executeQuery( "select * from team2" );
+			//System.out.printf("Team1\n");
+			while ( rs.next() ) {
+
+				//int id = rs.getInt("id");
+        
+				String  code_name = rs.getString("codename");
+				JLabel t2Codename = new JLabel(code_name);
+				t2Codename.setBounds(1075, 60+x, 200, 30);
+				t2Codename.setFont(new Font("default", Font.BOLD, 16));
+				t2Codename.setForeground(Color.white);
+				f.add(t2Codename);
+				JLabel t2P1Score = new JLabel("0");
+				t2P1Score.setBounds(t2Codename.getX()+150, 60+x, 100, 30);
+				t2P1Score.setFont(new Font("default", Font.BOLD, 16));
+				t2P1Score.setForeground(Color.white);
+				f.add(t2P1Score);
+				x+=35;
+			}
+		} catch(SQLException e){
+			e.printStackTrace();
+		}
+		JLabel TotalForTeam2 = new JLabel("Total Point");	
+    TotalForTeam2.setBounds(1125, 60+x, 200, 30);
+    TotalForTeam2.setFont(new Font("default", Font.BOLD, 16));
+		TotalForTeam2.setForeground(Color.white);
+		f.add(TotalForTeam2);
+		JLabel TotalScore2 = new JLabel("1000000");
+		TotalScore2.setBounds(1225, 60+x, 100, 30);
+		TotalScore2.setFont(new Font("default", Font.BOLD, 16));
+		TotalScore2.setForeground(Color.white);
+		f.add(TotalScore2);
 	   
 	   //Set Text Window to display data 
 	   JTextArea tWin1 = new JTextArea();
-	   tWin1.setBounds(200, 400, 500, 400);
+		 tWin1.setEditable(false);
+		 
+     //scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+	   //tWin1.setBounds(200, 600, 500, 200);
 	   tWin1.setForeground(Color.black);
+		 scroll1 = new JScrollPane ( tWin1 );
+		    scroll1.setBounds(200, 650, 500, 200);
 		 String t1 = "";
-		 try{
+		 /*try{
 	    ResultSet rs = stmt.executeQuery( "select * from team1" );
 			//System.out.printf("Team1\n");
 			while ( rs.next() ) {
@@ -130,11 +212,12 @@ PlayAction (){
 				t1 += first_name + " " + last_name + "\n";
 				}
 				tWin1.setText(t1);
+				
 		} catch(SQLException e){
 			e.printStackTrace();
-		}
-	  JTextArea tWin2 = new JTextArea();
-	   tWin2.setBounds(800, 400, 500, 400);
+		}*/
+	  /*JTextArea tWin2 = new JTextArea();
+	   tWin2.setBounds(800, 600, 500, 200);
 	   tWin2.setForeground(Color.black);
 		 String t2 = "";
 		 try{
@@ -152,18 +235,47 @@ PlayAction (){
 				tWin2.setText(t2);
 		} catch(SQLException e){
 			e.printStackTrace();
-		}	
+		}	*/
+		JTextArea tWin2 = new JTextArea();
+		 tWin2.setEditable(false);
+		 
+     //scroll.setVerticalScrollBarPolicy ( ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS );
+	   //tWin1.setBounds(200, 600, 500, 200);
+	   tWin2.setForeground(Color.black);
+		 scroll2 = new JScrollPane ( tWin2 );
+		 scroll2.setBounds(800, 650, 500, 200);
+		 /*String t2 = "";
+		 try{
+	    ResultSet rs = stmt.executeQuery( "select * from team2" );
+			//System.out.printf("Team1\n");
+			while ( rs.next() ) {
+
+				//int id = rs.getInt("id");
+
+				String  first_name = rs.getString("first_name");
+
+				String  last_name = rs.getString("last_name");
+				t2 += first_name + " " + last_name + "\n";
+				}
+				tWin2.setText(t2);
+				scroll2 = new JScrollPane ( tWin2 );
+		    scroll2.setBounds(800, 650, 500, 200);
+		} catch(SQLException e){
+			e.printStackTrace();
+		}*/
 	   
 	   //add elements to the frame
 	   f.add(paTitle);
 	   f.add(team1);
 	   f.add(team2);
-	   f.add(t1Codename);
-	   f.add(t1P1Score);
-	   f.add(t2Codename);
-	   f.add(t2P1Score);
-	   f.add(tWin1);
-		 f.add(tWin2);
+	   //f.add(t1Codename);
+	   //f.add(t1P1Score);
+	   //f.add(t2Codename);
+	   //f.add(t2P1Score);
+		 f.add(scroll1);
+		 f.add(scroll2);
+	   //f.add(tWin1);
+		 //f.add(tWin2);
 		 f.add(timer);
 	   f.setLayout(null);
 	   f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -171,7 +283,7 @@ PlayAction (){
 	   f.setSize(300,300);
 	   f.setResizable(true);
 	   f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
+     f.setLocationRelativeTo ( null );
   }
 		  
 }
