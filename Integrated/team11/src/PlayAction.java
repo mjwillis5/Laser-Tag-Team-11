@@ -32,6 +32,12 @@ public class PlayAction{
   	JFrame f = new JFrame("Play Action");
   	int x = 0;
 		Statement stmt = null;
+		Hashtable<Integer, String> codeAndIndexFor1 = new Hashtable<>();
+    Hashtable<Integer, String> codeAndIndexFor2 = new Hashtable<>();
+		JLabel labels1[] = new JLabel[15];
+		JLabel labels2[] = new JLabel[15];
+		int o1= 0;
+		int o2=0;
 PlayAction (){
 
 
@@ -122,16 +128,20 @@ PlayAction (){
 
 				String  code_name = rs.getString("codename");
 				team1_track.put(code_name, 0);
+				codeAndIndexFor1.put(o1,code_name);
 				JLabel t1Codename = new JLabel(code_name);
 				t1Codename.setBounds(200, 60+x, 200, 30);
 				t1Codename.setFont(new Font("default", Font.BOLD, 16));
 				t1Codename.setForeground(Color.white);
+				
 				f.add(t1Codename);
 				JLabel t1P1Score = new JLabel(String.valueOf(team1_track.get(code_name)));
 				t1P1Score.setBounds(t1Codename.getX()+150, 60+x, 50, 30);
 				t1P1Score.setFont(new Font("default", Font.BOLD, 16));
 		    t1P1Score.setForeground(Color.white);
+				labels1[o1] = t1P1Score;
 				f.add(t1P1Score);
+				o1++;
 				x+=35;
 			}
 		} catch(SQLException e){
@@ -173,7 +183,7 @@ PlayAction (){
 				String  code_name = rs.getString("codename");
 				JLabel t2Codename = new JLabel(code_name);
 				team2_track.put(code_name, 0);
-
+        codeAndIndexFor2.put(o2, code_name);
 				t2Codename.setBounds(1075, 60+x, 200, 30);
 				t2Codename.setFont(new Font("default", Font.BOLD, 16));
 				t2Codename.setForeground(Color.white);
@@ -183,6 +193,8 @@ PlayAction (){
 				t2P1Score.setFont(new Font("default", Font.BOLD, 16));
 				t2P1Score.setForeground(Color.white);
 				f.add(t2P1Score);
+				labels2[o2] = t2P1Score;
+				o2++;
 				x+=35;
 			}
 		} catch(SQLException e){
@@ -315,11 +327,23 @@ PlayAction (){
 									countdownStarter--;
 									String s=String.valueOf(countdownStarter);
 									timer.setText(s);
+									//team1_track.put("AAA", countdownStarter);
+									System.out.println("test1");
+									for(int i= 0; i < o1 ; i++){
+										labels1[i].setText(String.valueOf(team1_track.get(codeAndIndexFor1.get(i))));
+										System.out.println("test2");
+									}
+									for(int i= 0; i < o2 ; i++){
+										labels2[i].setText(String.valueOf(team2_track.get(codeAndIndexFor2.get(i))));
+									}
+									TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
+									TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));
 									if (countdownStarter <= 0) {
 											System.out.println("Timer Over!");
 											update = false;
 											scheduler.shutdown();
 									}
+                 
 								}
             }
         };
