@@ -292,7 +292,7 @@ public class Game {
          ResultSet rs = myStmt.executeQuery();
          while (rs.next()) {     
         	 codeName = rs.getString("ID") + "          "
-        	 		+ "" + rs.getString("codename");
+        	 		+ rs.getString("codename");
           } 
          if (codeName == "") {
         	 eMessage.setText("ID " + ID + " does not exist. Please create an ID");
@@ -400,11 +400,25 @@ public class Game {
 	         
 	         // Execute SQL query
 	         int ID = -1;
+	         String codeName = null;
 	         ResultSet rs = myStmt.executeQuery();
 	         while (rs.next()) {     
 	        	 ID = rs.getInt("ID");
+	        	 codeName = ID + "          " + newCodeName;
 	          } 
-
+	         
+	         if (tbName == "team1") {
+	        	 team1Player[team1Count] = codeName;
+	        	 team1PlayerL[team1Count].setText(codeName);
+	        	 team1Count++;
+	        	 //System.out.println("Count " + team1Count);
+	         }
+	         else if (tbName == "team2") {
+	        	 team2Player[team2Count] = codeName;
+	        	 team2PlayerL[team2Count].setText(codeName);
+	        	 team2Count++;
+	         }
+	         
         	 errMessage.setText(" New ID " + ID + " was created for Codename " + newCodeName);
         	 cName.setText(null);
   		   		System.out.println("ID + Codename  " + ID + "  " +  newCodeName);
@@ -514,6 +528,10 @@ public class Game {
 
   }
 }
+   
+
+   
+
    
 
    
