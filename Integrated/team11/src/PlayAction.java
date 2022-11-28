@@ -312,7 +312,7 @@ PlayAction (){
 		 timer.setForeground(Color.white);
 		 timer.setForeground(Color.black);
         final Runnable runnable = new Runnable() {
-				    int preparation = 1;
+				    int preparation = 30;
             int countdownStarter = 360;
             
             public void run() {
@@ -327,7 +327,7 @@ PlayAction (){
 									countdownStarter--;
 									String s=String.valueOf(countdownStarter);
 									timer.setText(s);
-									team2_track.put("LLL", countdownStarter);
+									//team2_track.put("LLL", countdownStarter);
 									System.out.println("test1");
 									for(int i= 0; i < o1 ; i++){
 										labels1[i].setText(String.valueOf(team1_track.get(codeAndIndexFor1.get(i))));
