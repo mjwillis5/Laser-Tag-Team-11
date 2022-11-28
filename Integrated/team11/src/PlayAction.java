@@ -327,7 +327,7 @@ PlayAction (){
 									countdownStarter--;
 									String s=String.valueOf(countdownStarter);
 									timer.setText(s);
-									//team1_track.put("AAA", countdownStarter);
+									team2_track.put("LLL", countdownStarter);
 									System.out.println("test1");
 									for(int i= 0; i < o1 ; i++){
 										labels1[i].setText(String.valueOf(team1_track.get(codeAndIndexFor1.get(i))));
@@ -338,12 +338,33 @@ PlayAction (){
 									}
 									TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
 									TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));
+									if(team1_track.values().stream().mapToInt(Integer::intValue).sum() > team2_track.values().stream().mapToInt(Integer::intValue).sum()){
+										TotalScore.setText("");
+										try{
+										Thread.sleep(500);
+										} catch(InterruptedException e)
+										{
+												 // this part is executed when an exception (in this example InterruptedException) occurs
+												 System.out.println("error");
+										}
+										TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
+									}else{
+									  TotalScore2.setText("");
+										try{
+										Thread.sleep(500);
+										} catch(InterruptedException e)
+										{
+												 // this part is executed when an exception (in this example InterruptedException) occurs
+												 System.out.println("error");
+										}
+										TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));	
+									}
 									if (countdownStarter <= 0) {
 											System.out.println("Timer Over!");
 											update = false;
 											scheduler.shutdown();
 									}
-                 
+                  
 								}
             }
         };
