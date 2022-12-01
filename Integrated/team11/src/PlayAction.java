@@ -1,28 +1,27 @@
 //package org.example;
+package team11.src;
+
+import org.postgresql.shaded.com.ongres.scram.common.bouncycastle.pbkdf2.Pack;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import javax.swing.border.Border;
+import java.net.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.PreparedStatement;
 import java.util.concurrent.*;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.Hashtable;
-import java.util.Map;
 
-public class PlayAction{
-	
+public class PlayAction extends Thread{
 	//Create frame
 	  JScrollPane scroll1;
 		JScrollPane scroll2;
@@ -39,8 +38,6 @@ public class PlayAction{
 		int o1= 0;
 		int o2=0;
 PlayAction (){
-
-
 	   //[PLAY ACTION SCREEN]
 	   //Set background image of frame
 		 /*final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -312,10 +309,14 @@ PlayAction (){
 		 timer.setForeground(Color.white);
 		 timer.setForeground(Color.black);
         final Runnable runnable = new Runnable() {
-				    int preparation = 30;
+			int preparation = 30;
             int countdownStarter = 360;
-            
-            public void run() {
+
+			//Attempts to create a datagram socket at port 7501
+			PacketClient packetClient = new PacketClient();
+			PacketServer packetServer = new PacketServer();
+
+			public void run() {
 							 if(preparation>=0){
                 System.out.println(preparation);
 								preparation--;
@@ -323,53 +324,87 @@ PlayAction (){
 								timer.setText(ss);
 							 }
                 if(preparation<0){
-									System.out.println(countdownStarter);
-									countdownStarter--;
-									String s=String.valueOf(countdownStarter);
-									timer.setText(s);
-									//team2_track.put("LLL", countdownStarter);
-									System.out.println("test1");
-									for(int i= 0; i < o1 ; i++){
-										labels1[i].setText(String.valueOf(team1_track.get(codeAndIndexFor1.get(i))));
-										System.out.println("test2");
-									}
-									for(int i= 0; i < o2 ; i++){
-										labels2[i].setText(String.valueOf(team2_track.get(codeAndIndexFor2.get(i))));
-									}
-									TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
-									TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));
-									if(team1_track.values().stream().mapToInt(Integer::intValue).sum() > team2_track.values().stream().mapToInt(Integer::intValue).sum()){
-										TotalScore.setText("");
-										try{
-										Thread.sleep(500);
-										} catch(InterruptedException e)
-										{
-												 // this part is executed when an exception (in this example InterruptedException) occurs
-												 System.out.println("error");
-										}
-										TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
-									}else{
-									  TotalScore2.setText("");
-										try{
-										Thread.sleep(500);
-										} catch(InterruptedException e)
-										{
-												 // this part is executed when an exception (in this example InterruptedException) occurs
-												 System.out.println("error");
-										}
-										TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));	
-									}
-									if (countdownStarter <= 0) {
-											System.out.println("Timer Over!");
-											update = false;
-											scheduler.shutdown();
-									}
-                  
-								}
+					System.out.println(countdownStarter);
+					countdownStarter--;
+					String s=String.valueOf(countdownStarter);
+					timer.setText(s);
+					//team2_track.put("LLL", countdownStarter);
+					System.out.println("test1");
+					for(int i= 0; i < o1 ; i++){
+						labels1[i].setText(String.valueOf(team1_track.get(codeAndIndexFor1.get(i))));
+						System.out.println("test2");
+					}
+					for(int i= 0; i < o2 ; i++){
+						labels2[i].setText(String.valueOf(team2_track.get(codeAndIndexFor2.get(i))));
+					}
+					TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
+					TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));
+					if(team1_track.values().stream().mapToInt(Integer::intValue).sum() > team2_track.values().stream().mapToInt(Integer::intValue).sum()){
+						TotalScore.setText("");
+						try{
+						Thread.sleep(500);
+						} catch(InterruptedException e)
+						{
+								 // this part is executed when an exception (in this example InterruptedException) occurs
+								 System.out.println("error");
+						}
+						TotalScore.setText(String.valueOf(team1_track.values().stream().mapToInt(Integer::intValue).sum()));
+					}else{
+					  TotalScore2.setText("");
+						try{
+						Thread.sleep(500);
+						} catch(InterruptedException e)
+						{
+								 // this part is executed when an exception (in this example InterruptedException) occurs
+								 System.out.println("error");
+						}
+						TotalScore2.setText(String.valueOf(team2_track.values().stream().mapToInt(Integer::intValue).sum()));
+					}
+
+					//Creates a simulated datagram packet based on random players in the hashtables
+					int shootId;
+					int hitId;
+					Integer[] teamHash1 = codeAndIndexFor1.keySet().toArray(new Integer[codeAndIndexFor1.size()]);
+					Integer[] teamHash2 = codeAndIndexFor2.keySet().toArray(new Integer[codeAndIndexFor2.size()]);
+					Hashtable<String, Integer> teamTrackHash;
+					Hashtable<Integer, String> teamCodeHash;
+					boolean randNum = Math.random() < 0.5;
+					if(randNum)
+					{
+						shootId = teamHash1[(int)(Math.random() * codeAndIndexFor1.size())]; //Index of player sending packet
+						hitId = teamHash2[(int)(Math.random() * codeAndIndexFor2.size())]; //Index of player hit by sender
+						teamTrackHash = team1_track;
+						teamCodeHash = codeAndIndexFor1;
+					}
+					else
+					{
+						shootId = teamHash2[(int)(Math.random() * codeAndIndexFor2.size())]; //Index of player sending packet
+						hitId = teamHash1[(int)(Math.random() * codeAndIndexFor1.size())]; //Index of player hit by sender
+						teamTrackHash = team2_track;
+						teamCodeHash = codeAndIndexFor2;
+					}
+
+					packetClient.sendPacket(shootId, hitId);
+
+					//Attempts to receive a datagram packet from the client (currently simulated)
+					packetServer.receivePacket(teamTrackHash, teamCodeHash);
+
+					/*//Attempts to send a response packet back to the client
+					try {
+						serverSocket.send(dataPacket);
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}*/
+
+					if (countdownStarter <= 0) {
+						System.out.println("Timer Over!");
+						update = false;
+						scheduler.shutdown();
+					}
+				}
             }
         };
         scheduler.scheduleAtFixedRate(runnable, 0, 1, SECONDS);
 				f.add(timer);
   }
-		  
 }

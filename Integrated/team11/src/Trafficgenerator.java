@@ -1,7 +1,7 @@
-package org.example;
+//package org.example;
+package team11.src;
 
 import java.io.IOException;
-import java.util.random.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
