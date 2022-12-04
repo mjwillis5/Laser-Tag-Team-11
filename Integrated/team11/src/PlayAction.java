@@ -373,6 +373,7 @@ PlayAction (){
 					{
 						shootId = teamHash1[(int)(Math.random() * codeAndIndexFor1.size())]; //Index of player sending packet
 						hitId = teamHash2[(int)(Math.random() * codeAndIndexFor2.size())]; //Index of player hit by sender
+						tWin1.append(codeAndIndexFor1.get(shootId) + " hit " + codeAndIndexFor2.get(hitId) + "\n");
 						teamTrackHash = team1_track;
 						teamCodeHash = codeAndIndexFor1;
 					}
@@ -380,6 +381,7 @@ PlayAction (){
 					{
 						shootId = teamHash2[(int)(Math.random() * codeAndIndexFor2.size())]; //Index of player sending packet
 						hitId = teamHash1[(int)(Math.random() * codeAndIndexFor1.size())]; //Index of player hit by sender
+						tWin2.append(codeAndIndexFor2.get(shootId) + " hit " + codeAndIndexFor1.get(hitId) + "\n");
 						teamTrackHash = team2_track;
 						teamCodeHash = codeAndIndexFor2;
 					}
