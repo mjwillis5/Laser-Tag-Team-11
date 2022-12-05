@@ -1,5 +1,5 @@
-//package org.example;//package org.example;
-package team11.src;
+package org.example;
+//package team11.src;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,10 +32,39 @@ public class Game {
    static int yValue;								//Set Y-Value to display codenames
    
    static JLabel countdownTimer = new JLabel();
+   
    public static void main(String args[]) {
       JFrame f = new JFrame("Laser Tag");
       Connection c = null;
       Statement stmt = null;
+   /*
+      // Deleting all records from the table for a new game
+      try {
+         Class.forName("org.postgresql.Driver");
+         c = DriverManager
+            .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+            "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+            System.out.println("db connection success");
+         stmt = c.createStatement();
+         stmt.executeUpdate( "Delete from team1" );
+         System.out.println("Deleted all records from Team1 table\n");
+         stmt.executeUpdate( "Delete from team2" );
+         System.out.println("Deleted all records from Team2 table\n");
+         stmt.close(); 
+         team1Count=0;
+         team2Count=0;
+         c.close();
+      } catch (Exception e) {
+         e.printStackTrace();
+         System.err.println(e.getClass().getName()+": "+e.getMessage());
+         System.exit(0);
+      }
+      */
+      
+      
+      //Querying tables to check there are records
+      c = null;
+      stmt = null;
       try {
          Class.forName("org.postgresql.Driver");
          c = DriverManager
@@ -155,7 +184,7 @@ public class Game {
    t2Title.setFont(new Font("default", Font.BOLD, 16));
    t2Title.setForeground(Color.white);
   
-   //Setting Initial Counter Value
+   //Setting Initial Yvalue for Playert IDs
    team1Count=0;
    team2Count=0;
    yValue =175;
@@ -163,10 +192,9 @@ public class Game {
    //Initialize JLabels
    for(int i = 0; i < 15; i++)
    {
-	 team1Player[i]="";  
 	 yValue = yValue+25;
-	 team1Player[i]=null;
-     team1PlayerL[i] = new JLabel("");
+	 team1Player[i]= null;
+	 team1PlayerL[i] = new JLabel("");
 	 team1PlayerL[i].setBounds(230, yValue, 200, 30);
 	 team1PlayerL[i].setFont(new Font("default", Font.BOLD, 16));
 	 team1PlayerL[i].setForeground(Color.white);
@@ -239,6 +267,8 @@ public class Game {
    eMessage.setBounds(650, 300, 450, 30);
    eMessage.setFont(new Font("default", Font.BOLD, 16));
    eMessage.setForeground(Color.white);
+   
+   //Section of code for user to lookup codename using IDs
    okButton.addActionListener(new ActionListener(){
    @Override
    public void actionPerformed(ActionEvent e) {
@@ -271,7 +301,7 @@ public class Game {
 
 	   System.out.println("Database = " + tbName);
 	   int ID = Integer.parseInt(idField.getText());
-	   System.out.println("codeName = " + codeName);
+	   //System.out.println("codeName = " + codeName);
 	   
   
      try{
@@ -302,17 +332,31 @@ public class Game {
          else {
 	         System.out.println( "codename = " + codeName);
 	         if (tbName == "team1") {
+	        	 if (team1Count >14) {
+	  	   		   eMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
+	  	   		   System.out.println("Max pleayers reached.");
+	  	   	   }
+	        	 else {
 	        	 team1Player[team1Count] = codeName;
 	        	 team1PlayerL[team1Count].setText(codeName);
 	        	 team1Count++;
 	        	 //System.out.println("Count " + team1Count);
+	        	 }
 	         }
 	         else if (tbName == "team2") {
+	        	 if (team2Count >14) {
+		  	   		   eMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
+		  	   		   System.out.println("Max pleayers reached.");
+		  	   	   }
+	        	 else {
 	        	 team2Player[team2Count] = codeName;
 	        	 team2PlayerL[team2Count].setText(codeName);
 	        	 team2Count++;
+	        	 //System.out.println("Count " + team2Count);
+	        	 }
 	         }
-         }
+	         }
+         
           rs.close();
           myStmt.close();  
       } catch (Exception x) {
@@ -323,6 +367,7 @@ public class Game {
       
    }
 });
+   
    //Code to add new Codename
    JLabel errMessage = new JLabel("");
    errMessage.setBounds(650, 550, 450, 30);
@@ -350,8 +395,13 @@ public class Game {
 	   		   tbName = "team2";
 	   	   }
   	   	   int count=0;
-	   	   if (tbName == "team1") count = count1;
-	   	   else if (tbName == "team2") count = count2;
+	   	   if (tbName == "team1") count = team1Count;
+	   	   else if (tbName == "team2") count = team2Count;
+	   	   if (count >14) {
+	   		   errMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
+	   		   System.out.println("Max pleayers reached.");
+	   	   }
+	   	   else {
 		   String newCodeName = cName.getText();
 		   System.out.println("codeName = " + codeName);
 	    	  
@@ -379,12 +429,13 @@ public class Game {
 	            
 	        // Execute SQL query
 	            myStmt.executeUpdate();
-	            System.out.println("add");
+	            System.out.println("Adding new record");
 	         } catch (Exception x) {
 	            x.printStackTrace();
 	            System.err.println(x.getClass().getName()+": "+x.getMessage());
 	            System.exit(0);
 	         }
+	         //Checking if the record is inserted.
 	         try{
 		            Connection c = null;
 		            Statement stmt = null;
@@ -397,7 +448,7 @@ public class Game {
 	         String query= "Select ID from " + tbName + " WHERE codename =?" ;
 	         PreparedStatement myStmt= c.prepareStatement(query);
 	         myStmt.setString(1, newCodeName);
-	         System.out.println("Query =  = " + myStmt);
+	         System.out.println("Query = " + myStmt);
 	         
 	         // Execute SQL query
 	         int ID = -1;
@@ -425,11 +476,13 @@ public class Game {
   		   		System.out.println("ID + Codename  " + ID + "  " +  newCodeName);
   	          rs.close();
   	          myStmt.close(); 
+  	          c.close();
   	          
 	         } catch (Exception x) {
 	            x.printStackTrace();
 	            System.err.println(x.getClass().getName()+": "+x.getMessage());
 	            System.exit(0);
+	      }
 	      }
 	      }
 	   });
@@ -484,11 +537,11 @@ public class Game {
    });
 /*
    for (int i=0; i < 15;  i++) {
-	   if(team1PlayerL[i] != null) 
-		   System.out.println("team1 player" + team1Player[i]);
+	   if(L[i] != null) 
+		   System.out.println("team1 player" + [i]);
 	}
    for (int i=0; i < 15;  i++) {
-	   if(team1PlayerL[i] != null) 
+	   if(L[i] != null) 
 		   System.out.println("team2 player" + team2Player[i]);
 	}*/
 
@@ -536,3 +589,4 @@ public class Game {
    
 
    
+
