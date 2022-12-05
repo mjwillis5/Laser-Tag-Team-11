@@ -1,5 +1,5 @@
-package org.example;
-//package team11.src;
+//package org.example;
+package team11.src;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,11 +8,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.Font;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
+import java.sql.*;
+import java.util.Set;
 
 
 public class Game {
@@ -37,7 +34,7 @@ public class Game {
       JFrame f = new JFrame("Laser Tag");
       Connection c = null;
       Statement stmt = null;
-   /*
+
       // Deleting all records from the table for a new game
       try {
          Class.forName("org.postgresql.Driver");
@@ -59,7 +56,7 @@ public class Game {
          System.err.println(e.getClass().getName()+": "+e.getMessage());
          System.exit(0);
       }
-      */
+
       
       
       //Querying tables to check there are records
@@ -206,53 +203,39 @@ public class Game {
 	 team2PlayerL[i].setForeground(Color.white);
 	 }
    
- //Add player to teams
-   JLabel cNameHeading = new JLabel("Create new Code Name");
-   cNameHeading.setBounds(675, 350, 450, 30);
-   cNameHeading.setFont(new Font("default", Font.BOLD, 24));
-   cNameHeading.setForeground(Color.white);
-   
-   //Declaring Radio Button for each Team
-   JRadioButton team1AButton = new JRadioButton("Team 1");
-   JRadioButton team2AButton = new JRadioButton("Team 2");
-   team1AButton.setBounds(675, 400, 75, 30);
-   team2AButton.setBounds(825, 400, 75, 30);
-   ButtonGroup tName = new ButtonGroup();
-   tName.add(team1AButton);
-   tName.add(team2AButton);
-   
-   
-   //Create display label
-   JLabel cNameLabel = new JLabel("Code Name");
-   cNameLabel.setBounds(675, 450, 100, 30);
-   cNameLabel.setFont(new Font("default", Font.BOLD, 16));
-   cNameLabel.setForeground(Color.white);
-   
    //Capture Code Name
    JTextField cName = new JTextField();
-   cName.setBounds(825, 450, 150, 30);
+   cName.setBounds(675, 300, 100, 30);
    cName.setText(null);
    
-   //Display and OK Button
-   JButton addButton = new JButton("OK");
-   addButton.setBounds(775, 500, 75, 30);
-   
    //Add player to teams
-   JLabel codeName = new JLabel("Enter Player ID");
-   codeName.setBounds(700, 150, 450, 30);
-   codeName.setFont(new Font("default", Font.BOLD, 24));
-   codeName.setForeground(Color.white);
+   JLabel pEntry = new JLabel("Create New Player Entry");
+   pEntry.setBounds(650, 150, 450, 30);
+   pEntry.setFont(new Font("default", Font.BOLD, 24));
+   pEntry.setForeground(Color.white);
+
+   //Respective labels for entry boxes
+   JLabel idLabel = new JLabel("Player ID");
+   idLabel.setBounds(575, 250, 200, 30);
+   idLabel.setFont(new Font("default", Font.BOLD, 16));
+   idLabel.setForeground(Color.white);
+
+   //Respective labels for entry boxes
+   JLabel cnLabel = new JLabel("Code Name");
+   cnLabel.setBounds(575, 300, 200, 30);
+   cnLabel.setFont(new Font("default", Font.BOLD, 16));
+   cnLabel.setForeground(Color.white);
    
    //Declaring Radio Button for each Team
    JRadioButton team1RButton = new JRadioButton("Team 1");
    JRadioButton team2RButton = new JRadioButton("Team 2");
    team1RButton.setBounds(675, 200, 75, 30);
-   team2RButton.setBounds(825, 200, 75, 30);
+   team2RButton.setBounds(775, 200, 75, 30);
+   team1RButton.setSelected(true);
    ButtonGroup tAName = new ButtonGroup();
    tAName.add(team1RButton);
    tAName.add(team2RButton);
-   
-   
+
    //Capture Code Name
    JTextField idField = new JTextField();
    idField.setBounds(675, 250, 100, 30);
@@ -260,233 +243,157 @@ public class Game {
    
    //Display and OK Button
    JButton okButton = new JButton("OK");
-   okButton.setBounds(800, 250, 75, 30);
+   okButton.setBounds(800, 300, 75, 30);
    
-   //Label to Display Message
+   //Label to Display ID Message
    JLabel eMessage = new JLabel("");
-   eMessage.setBounds(650, 300, 450, 30);
+   eMessage.setBounds(675, 350, 450, 30);
    eMessage.setFont(new Font("default", Font.BOLD, 16));
    eMessage.setForeground(Color.white);
-   
-   //Section of code for user to lookup codename using IDs
-   okButton.addActionListener(new ActionListener(){
-   @Override
-   public void actionPerformed(ActionEvent e) {
-	   eMessage.setText("");
-	   if(team1RButton.isSelected() == team2RButton.isSelected()) {
-		   eMessage.setText("No team selected. Please select a Team");
-		   System.out.println("No team selected.");
-	   }
-	   else
-	   if(idField.getText().isEmpty()) {
-		   eMessage.setText("No ID entered. Please enter an ID");
-		   System.out.println("ID is Empty");
-	   }
-	   else       
-			try {
-			    Integer.parseInt(idField.getText());
-			    		System.out.println("is a number");
-			} catch (Exception e1) {
-			    System.out.println("ID is not a valid number");
-			    eMessage.setText("ID is not a valid number. Enter a number");
-			}
-	   //Capture Table name based on radio button selected.  
-	   String tbName = "";
-	   if(team1RButton.isSelected()) {
-		   tbName = "team1"; 
-	   }
-	   else if(team2RButton.isSelected()) {
-		   tbName = "team2";
-	   }
 
-	   System.out.println("Database = " + tbName);
-	   int ID = Integer.parseInt(idField.getText());
-	   //System.out.println("codeName = " + codeName);
-	   
-  
-     try{
-         Connection c = null;
-         Statement stmt = null;
-         Class.forName("org.postgresql.Driver");
-         c = DriverManager
-            .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
-            "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
-            System.out.println("success");
-         stmt = c.createStatement();
-         String query= "Select id, codename from " + tbName + " where id = ?";
-         PreparedStatement myStmt= c.prepareStatement(query);
-         myStmt.setInt(1, ID);
-         System.out.println("Query =  = " + myStmt);
-  
-     // Execute SQL query
-         String codeName = "";
-         ResultSet rs = myStmt.executeQuery();
-         while (rs.next()) {     
-        	 codeName = rs.getString("ID") + "          "
-        	 		+ rs.getString("codename");
-          } 
-         if (codeName == "") {
-        	 eMessage.setText("ID " + ID + " does not exist. Please create an ID");
-  		   		System.out.println("ID " + ID + " does not exist.");
-         }
-         else {
-	         System.out.println( "codename = " + codeName);
-	         if (tbName == "team1") {
-	        	 if (team1Count >14) {
-	  	   		   eMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
-	  	   		   System.out.println("Max pleayers reached.");
-	  	   	   }
-	        	 else {
-	        	 team1Player[team1Count] = codeName;
-	        	 team1PlayerL[team1Count].setText(codeName);
-	        	 team1Count++;
-	        	 //System.out.println("Count " + team1Count);
-	        	 }
-	         }
-	         else if (tbName == "team2") {
-	        	 if (team2Count >14) {
-		  	   		   eMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
-		  	   		   System.out.println("Max pleayers reached.");
-		  	   	   }
-	        	 else {
-	        	 team2Player[team2Count] = codeName;
-	        	 team2PlayerL[team2Count].setText(codeName);
-	        	 team2Count++;
-	        	 //System.out.println("Count " + team2Count);
-	        	 }
-	         }
-	         }
-         
-          rs.close();
-          myStmt.close();  
-      } catch (Exception x) {
-         x.printStackTrace();
-         System.err.println(x.getClass().getName()+": "+x.getMessage());
-         System.exit(0);
-      }
-      
-   }
-});
-   
    //Code to add new Codename
    JLabel errMessage = new JLabel("");
-   errMessage.setBounds(650, 550, 450, 30);
+   errMessage.setBounds(675, 400, 450, 30);
    errMessage.setFont(new Font("default", Font.BOLD, 16));
    errMessage.setForeground(Color.white);
-   addButton.addActionListener(new ActionListener(){
-	      @Override
-	      public void actionPerformed(ActionEvent e) {
-	    	  errMessage.setText("");
-	    	  if(team1RButton.isSelected() == team2RButton.isSelected()) {
-	   		   errMessage.setText("No team selected. Please select a Team");
-	   		   System.out.println("No team selected.");
-	   	   }
-	   	   else
-	   	   if(idField.getText().isEmpty()) {
-	   		   errMessage.setText("No Codename entered. Please enter a Codename");
-	   		   System.out.println("Codename is Empty");
-	   	   }
-	   	   //Capture Table Name based on radio button selected.  
-	   	   String tbName = "";
-	   	   if(team1AButton.isSelected()) {
-	   		   tbName = "team1"; 
-	   	   }
-	   	   else if(team2AButton.isSelected()) {
-	   		   tbName = "team2";
-	   	   }
-  	   	   int count=0;
-	   	   if (tbName == "team1") count = team1Count;
-	   	   else if (tbName == "team2") count = team2Count;
-	   	   if (count >14) {
-	   		   errMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
-	   		   System.out.println("Max pleayers reached.");
-	   	   }
-	   	   else {
-		   String newCodeName = cName.getText();
-		   System.out.println("codeName = " + codeName);
-	    	  
-	    
-	         try{
 
-	            Connection c = null;
-	            Statement stmt = null;
-	            Class.forName("org.postgresql.Driver");
-	            c = DriverManager
-	               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
-	               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
-	               System.out.println("success");
-	            stmt = c.createStatement();
-	            String query= "INSERT INTO " + tbName + " VALUES(?,?,?,?)";
-	            PreparedStatement myStmt= c.prepareStatement(query);
-	            myStmt.setInt(1, count+1);
-	            myStmt.setString(2, null);
-	            myStmt.setString(3, null);
-	            myStmt.setString(4, newCodeName);
-		   	   if (tbName == "team1") count1++;
-		   	   else if (tbName == "team2") count2++;
-	            /*String query= "Delete from " + tbName;
-	            PreparedStatement myStmt= c.prepareStatement(query);*/
-	            
-	        // Execute SQL query
-	            myStmt.executeUpdate();
-	            System.out.println("Adding new record");
-	         } catch (Exception x) {
-	            x.printStackTrace();
-	            System.err.println(x.getClass().getName()+": "+x.getMessage());
-	            System.exit(0);
-	         }
-	         //Checking if the record is inserted.
-	         try{
-		            Connection c = null;
-		            Statement stmt = null;
-		            Class.forName("org.postgresql.Driver");
-		            c = DriverManager
-		               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
-		               "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
-		               System.out.println("success");
-		            stmt = c.createStatement();
-	         String query= "Select ID from " + tbName + " WHERE codename =?" ;
-	         PreparedStatement myStmt= c.prepareStatement(query);
-	         myStmt.setString(1, newCodeName);
-	         System.out.println("Query = " + myStmt);
-	         
-	         // Execute SQL query
-	         int ID = -1;
-	         String codeName = null;
-	         ResultSet rs = myStmt.executeQuery();
-	         while (rs.next()) {     
-	        	 ID = rs.getInt("ID");
-	        	 codeName = ID + "          " + newCodeName;
-	          } 
-	         
-	         if (tbName == "team1") {
-	        	 team1Player[team1Count] = codeName;
-	        	 team1PlayerL[team1Count].setText(codeName);
-	        	 team1Count++;
-	        	 //System.out.println("Count " + team1Count);
-	         }
-	         else if (tbName == "team2") {
-	        	 team2Player[team2Count] = codeName;
-	        	 team2PlayerL[team2Count].setText(codeName);
-	        	 team2Count++;
-	         }
-	         
-        	 errMessage.setText(" New ID " + ID + " was created for Codename " + newCodeName);
-        	 cName.setText(null);
-  		   		System.out.println("ID + Codename  " + ID + "  " +  newCodeName);
-  	          rs.close();
-  	          myStmt.close(); 
-  	          c.close();
-  	          
-	         } catch (Exception x) {
-	            x.printStackTrace();
-	            System.err.println(x.getClass().getName()+": "+x.getMessage());
-	            System.exit(0);
-	      }
-	      }
-	      }
-	   });
-   
+   //Code to add new Codename
+   okButton.addActionListener(new ActionListener(){
+       @Override
+       public void actionPerformed(ActionEvent e) {
+           String newCodeName = cName.getText();
+           errMessage.setText("");
+           if(team1RButton.isSelected() == team2RButton.isSelected()) {
+               errMessage.setText("No team selected. Please select a Team");
+               System.out.println("No team selected.");
+           }
+           else
+           if(cName.getText().isEmpty()) {
+               errMessage.setText("No Codename entered. Please enter a Codename");
+               System.out.println("Codename is Empty");
+           }
+           //Capture Table Name based on radio button selected.
+           String tbName = "";
+           if(team1RButton.isSelected()) {
+               tbName = "team1";
+           }
+           else if(team2RButton.isSelected()) {
+               tbName = "team2";
+           }
+           int count=0;
+           if (tbName == "team1") count = team1Count;
+           else if (tbName == "team2") count = team2Count;
+
+           try {
+               int idToInt = Integer.parseInt(idField.getText());
+           }
+           catch(NumberFormatException ne)
+           {
+               errMessage.setText("ID entered is not a valid number.");
+           }
+
+           if (count >14) {
+               errMessage.setText("Maximum of 15 players count reached. Cannot add new Players to the team");
+               System.out.println("Max players reached.");
+           }
+           else if(!newCodeName.isEmpty() && errMessage.getText() != "ID entered is not a valid number.") {
+               System.out.println("codeName = " + cName);
+               boolean cnFound = false;
+
+               try{
+
+                   Connection c = null;
+                   Class.forName("org.postgresql.Driver");
+                   c = DriverManager
+                           .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+                                   "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+                   System.out.println("success");
+                   Statement stmt = c.createStatement();
+                   if((team1RButton.isSelected() && team1Count > 0) || (team2RButton.isSelected() && team2Count > 0)) {
+                       ResultSet rs = stmt.executeQuery("select * from " + tbName);
+                       while (rs.next()) {
+                           String cnFind = rs.getString("CODENAME");
+                           System.out.println("Comparing strings " + cnFind + " and " + newCodeName);
+                           if (cnFind.equals(newCodeName)) {
+                               errMessage.setText("Code name exists, please enter a new code name");
+                               System.out.println("Code name exists, please enter a new code name");
+                               cnFound = true;
+                               break;
+                           }
+                       }
+                   }
+                   if(!cnFound) {
+                       String query = "INSERT INTO " + tbName + " VALUES(?,?,?,?)";
+                       PreparedStatement myStmt = c.prepareStatement(query);
+                       myStmt.setInt(1, Integer.parseInt(idField.getText()));
+                       myStmt.setString(2, null);
+                       myStmt.setString(3, null);
+                       myStmt.setString(4, newCodeName);
+                       if (tbName == "team1") count1++;
+                       else if (tbName == "team2") count2++;
+            /*String query= "Delete from " + tbName;
+            PreparedStatement myStmt= c.prepareStatement(query);*/
+
+                       // Execute SQL query
+                       myStmt.executeUpdate();
+                       System.out.println("Adding new record");
+                   }
+               } catch (Exception x) {
+                   x.printStackTrace();
+                   System.err.println(x.getClass().getName()+": "+x.getMessage());
+                   System.exit(0);
+               }
+               //Checking if the record is inserted.
+               if(!cnFound) {
+                   try {
+                       Connection c = null;
+                       Class.forName("org.postgresql.Driver");
+                       c = DriverManager
+                               .getConnection("jdbc:postgresql://ec2-54-147-36-107.compute-1.amazonaws.com:5432/deum74j36kqraj",
+                                       "kexafudwppoppl", "c0abaa9ed698fdce77c4c79079ca966d7b06eb9f7a524cb3db5a90faf9c8eb6c");
+                       System.out.println("success");
+                       String query = "Select ID from " + tbName + " WHERE codename =?";
+                       PreparedStatement myStmt = c.prepareStatement(query);
+                       myStmt.setString(1, newCodeName);
+                       System.out.println("Query = " + myStmt);
+
+                       // Execute SQL query
+                       int ID = -1;
+                       String codeName = null;
+                       ResultSet rs = myStmt.executeQuery();
+                       while (rs.next()) {
+                           ID = rs.getInt("ID");
+                           codeName = ID + "          " + newCodeName;
+                       }
+
+                       if (tbName == "team1") {
+                           team1Player[team1Count] = codeName;
+                           team1PlayerL[team1Count].setText(codeName);
+                           team1Count++;
+                           //System.out.println("Count " + team1Count);
+                       } else if (tbName == "team2") {
+                           team2Player[team2Count] = codeName;
+                           team2PlayerL[team2Count].setText(codeName);
+                           team2Count++;
+                       }
+
+                       errMessage.setText(" New ID " + ID + " was created for Codename " + newCodeName);
+                       idField.setText(null);
+                       cName.setText(null);
+                       System.out.println("ID + Codename  " + ID + "  " + newCodeName);
+                       rs.close();
+                       myStmt.close();
+                       c.close();
+
+                   } catch (Exception x) {
+                       x.printStackTrace();
+                       System.err.println(x.getClass().getName() + ": " + x.getMessage());
+                       System.exit(0);
+                   }
+               }
+           }
+       }
+   });
 
    //Set up countdown timer
    countdownTimer.setText("");
@@ -499,40 +406,51 @@ public class Game {
    JButton startGame = new JButton("Start Game");
    //startGame.setBounds(JFrame.MAXIMIZED_BOTH/2, JFrame.MAXIMIZED_BOTH/2, 100, 30);
    startGame.setBounds(750, 650, 100, 30);
+
+   JLabel startWarning = new JLabel("Please enter a player for each team to start the game.");
+   startWarning.setBounds(750, 750, 800, 30);
+   startWarning.setFont(new Font("default", Font.BOLD, 16));
+   startWarning.setForeground(Color.white);
+   startWarning.setVisible(false);
+
    startGame.addActionListener(new ActionListener()
    {
-       public void actionPerformed(ActionEvent ae)
-       {
-          //Countdown timer
-          startGame.setVisible(false);
-          countdownTimer.setVisible(true);
-          countdownTimer.setText("3");
-          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
-          f.repaint();
-          try {
-             Thread.sleep(1000);
-          } catch (InterruptedException e) {
-             throw new RuntimeException(e);
-          }
-          countdownTimer.setText("2");
-          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
-          f.repaint();
-          try {
-             Thread.sleep(1000);
-          } catch (InterruptedException e) {
-             throw new RuntimeException(e);
-          }
-          countdownTimer.setText("1");
-          countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
-          f.repaint();
-          try {
-             Thread.sleep(1000);
-          } catch (InterruptedException e) {
-             throw new RuntimeException(e);
-          }
+       public void actionPerformed(ActionEvent ae) {
+           if (team1Count > 0 && team2Count > 0) {
+               startWarning.setVisible(false);
+               //Countdown timer
+               startGame.setVisible(false);
+               countdownTimer.setVisible(true);
+               countdownTimer.setText("3");
+               countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+               f.repaint();
+               try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
+               countdownTimer.setText("2");
+               countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+               f.repaint();
+               try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
+               countdownTimer.setText("1");
+               countdownTimer.paintImmediately(countdownTimer.getVisibleRect());
+               f.repaint();
+               try {
+                   Thread.sleep(1000);
+               } catch (InterruptedException e) {
+                   throw new RuntimeException(e);
+               }
 
-    	   f.dispose();
-    	   PlayAction paFrame = new PlayAction();
+               f.dispose();
+               PlayAction paFrame = new PlayAction();
+           }
+           else
+               startWarning.setVisible(true);
        }
    });
 /*
@@ -553,7 +471,7 @@ public class Game {
    f.add(t1Title);
    f.add(t2Title);
    f.add(idField);
-   f.add(codeName);
+   f.add(pEntry);
    f.add(okButton);
    f.add(eMessage);
    f.add(team1RButton);
@@ -566,15 +484,13 @@ public class Game {
 		   f.add(team2PlayerL[i]);
 	   		}
    }
-  f.add(cNameHeading);
-  f.add(team1AButton);
-  f.add(team2AButton);
-  f.add(cNameLabel);
   f.add(cName);
-  f.add(addButton);
   f.add(errMessage);
    f.add(startGame);
    f.add(countdownTimer);
+   f.add(startWarning);
+   f.add(cnLabel);
+   f.add(idLabel);
    f.setLayout(null);
    f.setVisible(true);
    f.setResizable(true);
